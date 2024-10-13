@@ -1,0 +1,9 @@
+Objective: Build an API to manage a list of tasks.
+Features:
+Create, read, update, and delete (CRUD) tasks.
+Each task should have a title, description, and status (completed or not).
+Implement pagination and search functionality for tasks.
+Learning Focus:
+Basic CRUD operations with MongoDB.
+RESTful API design.
+Routing in Express.js.
