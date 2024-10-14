@@ -1,4 +1,4 @@
-import { Todo } from '../models/todoModel.js';
+import { Todo } from "../models/todoModel.js";
 
 /**
  * @desc returns all todos from db
@@ -7,10 +7,10 @@ import { Todo } from '../models/todoModel.js';
  */
 export const getAllTodo = async (req, res) => {
   try {
-    const todos = await Todo.find();
+    const todos = await Todo.find({ userId: req.user._id });
     res.status(200).json({
       success: true,
-      message: 'Data Fetched Successfully',
+      message: "Data Fetched Successfully",
       data: todos,
     });
   } catch (error) {
@@ -37,7 +37,7 @@ export const getTodo = async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      message: 'Data fetched successfully!',
+      message: "Data fetched successfully!",
       data: todo,
     });
   } catch (error) {
@@ -59,11 +59,13 @@ export const addTodo = async (req, res) => {
     const todo = new Todo({
       title,
       description,
+      userId: req.user._id,
     });
+
     const createdTodo = await todo.save();
     res.status(201).json({
       success: true,
-      message: 'New todo created successfully!',
+      message: "New todo created successfully!",
       data: createdTodo,
     });
   } catch (error) {
@@ -83,8 +85,8 @@ export const updateTodo = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const updatedTodo = await Todo.findByIdAndUpdate(
-      id,
+    const updatedTodo = await Todo.findOneAndUpdate(
+      { _id: id, userId: req.user._id },
       {
         ...req.body,
       },
@@ -96,12 +98,12 @@ export const updateTodo = async (req, res) => {
     if (!updatedTodo) {
       return res.status(400).json({
         success: false,
-        message: 'Todo not found',
+        message: "Todo not found",
       });
     }
     res.status(200).json({
       success: true,
-      message: 'Todo Updated successfully!',
+      message: "Todo Updated successfully!",
       data: updatedTodo,
     });
   } catch (error) {
@@ -120,10 +122,13 @@ export const updateTodo = async (req, res) => {
 export const deleteTodo = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedTodo = await Todo.findByIdAndDelete(id);
+    const deletedTodo = await Todo.findOneAndDelete({
+      _id: id,
+      userId: req.user._id,
+    });
     res.status(200).json({
       success: true,
-      message: 'Todo deleted successfully!',
+      message: "Todo deleted successfully!",
       data: deletedTodo,
     });
   } catch (error) {
